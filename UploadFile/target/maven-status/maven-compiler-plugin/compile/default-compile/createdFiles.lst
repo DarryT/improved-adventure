@@ -1,0 +1,6 @@
+com\progresssoft\bean\FileBean.class
+com\progresssoft\dao\ExtractFileDao.class
+com\progresssoft\dao\ExtractFileDaoImpl.class
+com\progresssoft\service\ExtractFileService.class
+com\progresssoft\service\ExtractFileServiceImpl.class
+com\progresssoft\controller\UploadFileController.class
