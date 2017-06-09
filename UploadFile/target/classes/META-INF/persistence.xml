@@ -6,12 +6,9 @@
 	 <!-- <persistence-unit name="punit" >
 	</persistence-unit>  -->
 	
-	 <persistence-unit name="testPU" transaction-type="RESOURCE_LOCAL">
-    <class>com.byteslounge.spring.tx.model.User</class>
-    <provider>org.hibernate.ejb.HibernatePersistence</provider>
-    <properties>
-        <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL5Dialect" />
-    </properties>
-  </persistence-unit> 
+	 <persistence-unit name="JpaPersistenceUnit"
+        transaction-type="RESOURCE_LOCAL">
+        <provider>org.hibernate.ejb.HibernatePersistence</provider>
+    </persistence-unit>
 	
 </persistence>
