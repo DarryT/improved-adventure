@@ -14,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.opencsv.CSVReader;
 import com.progresssoft.bean.ExtractFileEntity;
@@ -36,6 +37,9 @@ public class ExtractFileController {
 	private static final AtomicInteger count = new AtomicInteger(0); 
 	private int RowID=0;
 	List<ExtractFileEntity> dealData = new ArrayList<ExtractFileEntity>();
+	List<ExtractFileEntity> searchResult = new ArrayList<ExtractFileEntity>();
+	List<ExtractFileEntity> viewForm = new ArrayList<ExtractFileEntity>();
+	
 	    
 	    @RequestMapping(value = "/Success")
 	    public String extractData(@RequestParam(value = "file")final CommonsMultipartFile multiFile) throws Exception {  
@@ -72,7 +76,8 @@ public class ExtractFileController {
 		 	        extractservice.extractData(dealData);
 	 	       }
 	 	       else{
-	 	    	   		
+	 	    	  logger.info("File has already been extracted. Select new file."); 	
+	 	    	   
 	 	       }  
 	    	}
 	    	catch(Exception ex){
@@ -82,35 +87,34 @@ public class ExtractFileController {
 	    	return "Success"; 	    	
 	    }  
 	    
+	    @RequestMapping(value="/FileSearchResult")
+		public ModelAndView searchResult() {
+	    	ModelAndView mv = new ModelAndView(); 
+			try{					
+				searchResult = extractservice.searchResult("TestFile.csv");	
+				
+			      mv.addObject("list",searchResult);		    
+			    
+			}
+			catch(Exception e){
+				e.printStackTrace();
+				logger.error("Error Occurred in searchResult()");
+			}
+			return mv;
+		}
 	    
 	    private boolean checkDuplicateFile(String fileName) {
 	    	boolean result = false;
 	    	try{
-	    		extractservice.checkDuplicateFile(fileName);
+	    		result = extractservice.checkDuplicateFile(fileName);
 	    	}
 	    	catch(Exception e){
-	    		
+	    		e.printStackTrace();
+	    		logger.error("Error occurred in checkDuplicateFile(");
 	    	}
 	    	return result;
 	    	}
-	    	 
-	
-	
-	
-	/*@RequestMapping(value="/Success")
-	public String extractData() {
-		String result = "fail";
-		try{		
-			System.out.println(" in extract data post method");
-			//extractservice.extractData(fileData);
-			result= "success";		
-		}
-		catch(Exception e){
-			e.printStackTrace();
-		}
-		return result;
-	}*/
-	
+	 
 	
 	public ExtractFileService getExtractservice() {
 		return extractservice;

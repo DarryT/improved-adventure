@@ -45,6 +45,11 @@ public class ExtractFileServiceImpl implements ExtractFileService{
 		
 		return extractdao.checkDuplicateFile(fileName);
 	}
+
+	public List<ExtractFileEntity> searchResult(String fileName) {
+		
+		return extractdao.searchResult(fileName);
+	}
 	
 	
 	

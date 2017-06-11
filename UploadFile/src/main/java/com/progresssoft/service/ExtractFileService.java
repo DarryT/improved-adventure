@@ -10,4 +10,6 @@ public interface ExtractFileService {
 	
 	boolean checkDuplicateFile(String fileName);
 	
+	List<ExtractFileEntity> searchResult(String fileName);
+	
 }

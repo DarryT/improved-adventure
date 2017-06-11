@@ -10,6 +10,8 @@ public interface ExtractFileDao {
 	public void extractData(List<ExtractFileEntity> data) throws SQLException;
 	
 	boolean checkDuplicateFile(String fileName);
+	
+	List<ExtractFileEntity> searchResult(String fileName);
 
 
 }
