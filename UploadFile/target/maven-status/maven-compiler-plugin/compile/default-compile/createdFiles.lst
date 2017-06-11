@@ -1,6 +1,8 @@
 com\progresssoft\controller\ExtractFileController.class
-com\progresssoft\bean\FileBean.class
+com\progresssoft\bean\ExtractFileEntity.class
 com\progresssoft\dao\ExtractFileDao.class
 com\progresssoft\dao\ExtractFileDaoImpl.class
+com\progresssoft\bean\ExtractFileBean.class
 com\progresssoft\service\ExtractFileService.class
 com\progresssoft\service\ExtractFileServiceImpl.class
+com\progresssoft\CSVParser\CSVParser.class

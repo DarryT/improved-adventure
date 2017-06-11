@@ -1,18 +1,22 @@
 package com.progresssoft.controller;
 
-import javax.validation.Valid;
+import java.io.File;
+import java.io.FileReader;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.ComponentScan;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
-import com.progresssoft.bean.FileBean;
+import com.opencsv.CSVReader;
+import com.progresssoft.bean.ExtractFileEntity;
 import com.progresssoft.service.ExtractFileService;
 
 /**
@@ -20,48 +24,92 @@ import com.progresssoft.service.ExtractFileService;
  * @author Darry
  *
  */
-@ComponentScan
+
 @Controller
+@Component
 public class ExtractFileController {
 	
-	@Autowired
+	@Autowired(required=false)
 	private ExtractFileService extractservice;
 	final static Logger logger = Logger.getLogger(ExtractFileController.class);
-
-	/*@RequestMapping("/extract")
-	public String helloWorld() {
-		 System.out.println(" you are in helloWorld");
-		String message = "<br><div style='text-align:center;'> <h3>Hello Folks!</div><br><br>";
-		return message;
-	}*/
+	ExtractFileEntity data = new ExtractFileEntity();
+	private static final AtomicInteger count = new AtomicInteger(0); 
+	private int RowID=0;
+	List<ExtractFileEntity> dealData = new ArrayList<ExtractFileEntity>();
+	    
+	    @RequestMapping(value = "/Success")
+	    public String extractData(@RequestParam(value = "file")final CommonsMultipartFile multiFile) throws Exception {  
+	    	try{
+	 	        logger.info("Inside extractData");
+	 	        File file = new File(getClass().getResource("/WEB-INF/TestFile.csv").toURI());   	            
+	 	        CSVReader reader = new CSVReader(new FileReader(file), ',');       
+	 	        boolean fileChk = checkDuplicateFile("TestFile.csv");	
+	 	       
+	 	        //To check if file has already been extracted
+	 	        if(fileChk==false){
+	 	    	  List<String[]> records = reader.readAll();
+		 	  		
+		 	  		Iterator<String[]> iterator = records.iterator();
+		 	  		
+		 	  		while(iterator.hasNext()){
+		 	  			String[] record = iterator.next();
+		 	  			ExtractFileEntity deal = new ExtractFileEntity();
+		 	  			
+		 	  			RowID = count.incrementAndGet();
+		 	  			
+		 	  			deal.setId(Long.valueOf(RowID));
+		 	  			deal.setDealId(record[0]);
+		 	  			deal.setFrmCurrCode(record[1]);
+		 	  			deal.setToCurrCode(record[2]);
+		 	  			deal.setDealTime(record[3]);
+		 	  			deal.setDealAmt(record[4]);
+		 	  			deal.setSourceFile("TestFile.csv");
+		 	  			dealData.add(deal);
+		 	  			
+		 	  			logger.info("Exiting extractData()");
+		 	  		} 	  		
+		 	  		reader.close();	  	
+		 	        extractservice.extractData(dealData);
+	 	       }
+	 	       else{
+	 	    	   		
+	 	       }  
+	    	}
+	    	catch(Exception ex){
+	    		ex.printStackTrace();
+	    		logger.error("Error Occurred in extractData()");
+	    	}
+	    	return "Success"; 	    	
+	    }  
+	    
+	    
+	    private boolean checkDuplicateFile(String fileName) {
+	    	boolean result = false;
+	    	try{
+	    		extractservice.checkDuplicateFile(fileName);
+	    	}
+	    	catch(Exception e){
+	    		
+	    	}
+	    	return result;
+	    	}
+	    	 
 	
-	@RequestMapping(value="/extract", method=RequestMethod.GET)
-	public String extractData(Model model) {	
-		System.out.println(" ugsddiufhvafsidfrhvauilrsg ");
-		logger.debug("You are in extractData() method");
-		FileBean fileData = new FileBean();		
-		model.addAttribute("fileData", fileData);
-		return "extract";
-	}
 	
-	@RequestMapping(value="/extract", method=RequestMethod.POST)
-	public String extractData(@Valid @ModelAttribute("fileData") FileBean fileData, BindingResult result) {
-		System.out.println(" in extract data post");
-		if (result.hasErrors()) {
-			return "extract";
-		} else {
-			 extractservice.extractData(fileData.getDealId(),fileData.getFrmCurrCode(),fileData.getToCurrCode(),fileData.getDealTime(),fileData.getDealAmt());
-			
-			/*if (result) {				
-				return "success";
-			} else {				
-				return "failure";
-			}*/
+	
+	/*@RequestMapping(value="/Success")
+	public String extractData() {
+		String result = "fail";
+		try{		
+			System.out.println(" in extract data post method");
+			//extractservice.extractData(fileData);
+			result= "success";		
 		}
-		return null;
-		
-	}
-	
+		catch(Exception e){
+			e.printStackTrace();
+		}
+		return result;
+	}*/
 	
 	
 	public ExtractFileService getExtractservice() {

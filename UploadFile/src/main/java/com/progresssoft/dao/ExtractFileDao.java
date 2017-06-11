@@ -1,12 +1,15 @@
 package com.progresssoft.dao;
-/**
- * @author Darry
- */
-import com.progresssoft.bean.FileBean;
+
+import java.sql.SQLException;
+import java.util.List;
+
+import com.progresssoft.bean.ExtractFileEntity;
 
 public interface ExtractFileDao {
 	
-	public void persist(FileBean dealData);
-	public boolean extractData(Integer dealId,String fromCurrCode,String toCurrCode,String dealTimestamp,String dealAmt);
+	public void extractData(List<ExtractFileEntity> data) throws SQLException;
+	
+	boolean checkDuplicateFile(String fileName);
+
 
 }

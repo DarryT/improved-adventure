@@ -1,13 +1,13 @@
 package com.progresssoft.service;
 
-import java.math.BigDecimal;
-import java.util.Date;
+import java.util.List;
 
-import com.progresssoft.bean.FileBean;
+import com.progresssoft.bean.ExtractFileEntity;
 
 public interface ExtractFileService {
 	
-	public void persist(FileBean dealData);
-	public boolean extractData(String dealId,String fromCurrCode,String toCurrCode,Date dealTimestamp,BigDecimal dealAmt);
+	public void extractData(List<ExtractFileEntity> dealData);
+	
+	boolean checkDuplicateFile(String fileName);
 	
 }

@@ -1,18 +1,23 @@
 package com.progresssoft.service;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
+import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import com.progresssoft.bean.FileBean;
+import com.progresssoft.bean.ExtractFileEntity;
+import com.progresssoft.controller.ExtractFileController;
 import com.progresssoft.dao.ExtractFileDao;
 
+@Service()
 public class ExtractFileServiceImpl implements ExtractFileService{
+	
+	
 	@Autowired
 	private ExtractFileDao extractdao;
-	private ArrayList<FileBean> listOfObjects_100000= new ArrayList<FileBean>();
+	final static Logger logger = Logger.getLogger(ExtractFileController.class);
 	
 	public ExtractFileDao getExtractdao() {
 		return extractdao;
@@ -22,36 +27,25 @@ public class ExtractFileServiceImpl implements ExtractFileService{
 		this.extractdao = extractdao;
 	}
 
-	public ArrayList<FileBean> getListOfObjects_100000() {
-		return listOfObjects_100000;
-	}
 
-	public void setListOfObjects_100000(ArrayList<FileBean> listOfObjects_100000) {
-		this.listOfObjects_100000 = listOfObjects_100000;
-	}
-
-
-	public void iterate(){
-        for(FileBean d : listOfObjects_100000){
-        	extractdao.persist(d);
-        }
-	}
-
-	public boolean extractData(Integer dealId, String fromCurrCode, String toCurrCode, String dealTimestamp, String dealAmt) {
-		for(FileBean d : listOfObjects_100000){
-        	extractdao.persist(d);
-        }
-		return false;
-	}
-
-	public void persist(FileBean dealData) {
+	 @Transactional(readOnly = false)
+	public void extractData(List<ExtractFileEntity> dealData) {
 		
+		 try {	          
+			 extractdao.extractData(dealData);
+			 	 
+       } catch (Exception e) {
+    	   	e.printStackTrace();
+    	   	logger.error("Problem in prepareDataForUpdate while comparing persistent data with the csv file data", e);
+       }
 		
 	}
 
-	public boolean extractData(String dealId, String fromCurrCode, String toCurrCode, Date dealTimestamp,
-			BigDecimal dealAmt) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean checkDuplicateFile(String fileName) {
+		
+		return extractdao.checkDuplicateFile(fileName);
 	}
+	
+	
+	
 }

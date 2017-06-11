@@ -8,21 +8,25 @@
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd">
 
  <mvc:annotation-driven />
+<!--  <context:component-scan base-package="com.progresssoft.bean"/> -->
+<context:component-scan base-package="com.progresssoft.controller"/> 
+<context:component-scan base-package="com.progresssoft.service"/>
+<context:component-scan base-package="com.progresssoft.dao"/>
 
-<!-- <context:component-scan base-package="com.progresssoft.bean"/> -->
 
-
-<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+<bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
 	<property name="prefix" value="/WEB-INF/Jsp/" />
 	<property name="suffix" value=".jsp" />
 </bean>
 
+<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+	<property name="maxUploadSize" value="1000000" />
+</bean>
+	
+
 <!-- <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
 	<property name="basename" value="messages" />
 </bean> -->
-
-
-<!--  <mvc:resources mapping="/Bootstrap/**" location="/Bootstrap/css/" cache-period="31556926"/> -->
 
  
 </beans>
